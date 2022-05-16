@@ -8,16 +8,12 @@ defmodule SqliteInit.Application do
   @impl true
   def start(_type, _args) do
     children = [
-      # Start the Ecto repository
+      # ConnectionListener MUST be started before the Sqlite Repo!
+      {SqliteInit.ConnectionListener, SqliteInit.ConnectionListener},
       SqliteInit.Repo,
-      # Start the Telemetry supervisor
       SqliteInitWeb.Telemetry,
-      # Start the PubSub system
       {Phoenix.PubSub, name: SqliteInit.PubSub},
-      # Start the Endpoint (http/https)
       SqliteInitWeb.Endpoint
-      # Start a worker by calling: SqliteInit.Worker.start_link(arg)
-      # {SqliteInit.Worker, arg}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

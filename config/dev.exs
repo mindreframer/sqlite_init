@@ -4,6 +4,16 @@ import Config
 config :sqlite_init, SqliteInit.Repo,
   database: Path.expand("../sqlite_init_dev.db", Path.dirname(__ENV__.file)),
   pool_size: 5,
+  # configure: fn conn ->
+  #   IO.puts("DB Configure")
+  #   IO.inspect(conn)
+  # end,
+  # after_connect: fn conn ->
+  #   IO.puts("AFTER CONNECT")
+  #   IO.inspect(conn)
+  # end,
+  ## working approach
+  connection_listeners: [SqliteInit.ConnectionListener],
   stacktrace: true,
   show_sensitive_data_on_connection_error: true
 
