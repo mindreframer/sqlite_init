@@ -34,3 +34,23 @@ ExLitedb.path_for("cron")
 ExLitedb.path_for("re")
 Ecto.Adapter.lookup_meta(SqliteInit.Repo)
 ```
+
+### UPDATED IMPROVEMENT (thanks to @ruslandoga!)
+
+All you need is to setup following `after_connect` callback:
+
+```elixir
+config :sqlite_init, SqliteInit.Repo,
+  database: Path.expand("../sqlite_init_dev.db", Path.dirname(__ENV__.file)),
+  pool_size: 5,
+  after_connect: fn _conn ->
+    [db_conn] = Process.get(:"$callers")
+    db_connection_state = :sys.get_state(db_conn)
+    conn = db_connection_state.mod_state.state
+    IO.inspect(conn, label: "conn")
+    :ok = Exqlite.Basic.enable_load_extension(conn)
+    Exqlite.Basic.load_extension(conn, ExLitedb.path_for("re"))
+  end,
+  stacktrace: true,
+  show_sensitive_data_on_connection_error: true
+```

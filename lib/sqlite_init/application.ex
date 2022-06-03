@@ -8,8 +8,6 @@ defmodule SqliteInit.Application do
   @impl true
   def start(_type, _args) do
     children = [
-      # ConnectionListener MUST be started before the Sqlite Repo!
-      {SqliteInit.ConnectionListener, SqliteInit.ConnectionListener},
       SqliteInit.Repo,
       SqliteInitWeb.Telemetry,
       {Phoenix.PubSub, name: SqliteInit.PubSub},
